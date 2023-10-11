@@ -5,6 +5,7 @@ import connectDB from "./config/database";
 import cors from 'cors';
 
 // import swaggerDocs from "./utils/swagger";
+import ProjectRouter from "./routes/project";
 
 const app: Express = express();
 
@@ -16,6 +17,8 @@ connectDB(process.env.MONGO_URI as string);
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors())
+
+app.use("/api", ProjectRouter)
 
 // swaggerDocs(app, 3000);
 
