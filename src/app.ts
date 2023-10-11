@@ -5,6 +5,7 @@ import connectDB from "./config/database";
 import cors from 'cors';
 import routerCategory from "./routes/category";
 // import swaggerDocs from "./utils/swagger";
+import ProjectRouter from "./routes/project";
 
 const app: Express = express();
 
@@ -18,6 +19,8 @@ app.use(morgan("tiny"));
 app.use(cors())
 // api
 app.use("/api", routerCategory);
+app.use("/api", ProjectRouter)
+
 // swaggerDocs(app, 3000);
 
 export const viteNodeApp: Express = app;
