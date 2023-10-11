@@ -26,7 +26,7 @@ export const getAllCategory = async (req, res) => {
 
 export const getCategoryById = async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findById(req.params.id) as any;
     if (!category || category.length === 0) {
       return res.status(404).json({
         message: "Không tìm thấy danh mục",
@@ -82,7 +82,7 @@ export const addCategory = async (req, res) => {
         message: errors,
       });
     }
-    const category = await Category.create(formData);
+    const category = await Category.create(formData)as any;
     if (!category || category.length === 0) {
       return res.status(404).json({
         message: "Không tìm thấy danh mục",
@@ -112,7 +112,7 @@ export const updateCategory = async (req, res) => {
     }
     const category = await Category.findOneAndUpdate({ _id: id }, body, {
       new: true,
-    });
+    }) as any;
     if (!category || category.length === 0) {
       return res.status(400).json({
         message: "Cập nhật danh mục thất bại",
