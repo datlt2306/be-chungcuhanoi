@@ -145,7 +145,7 @@ export const getAll = async (req: Request, res: Response) => {
     };
 
     try {
-        const projects = await Project.find({}, options) as any;
+        const projects = await Project.paginate({}, options) as any;
         if (!projects || projects.length === 0) {
             return res.status(400).json({
                 message: "Không tìm thấy thông tin dự án!",
