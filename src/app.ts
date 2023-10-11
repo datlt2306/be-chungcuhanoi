@@ -2,7 +2,10 @@ import dotenv from "dotenv";
 import express, { Express } from "express";
 import morgan from "morgan";
 import connectDB from "./config/database";
-import cors from 'cors';
+import cors from "cors";
+import roleRouter from "./routes/role";
+import authRouter from "./routes/auth";
+import userRouter from "./routes/user";
 
 // import swaggerDocs from "./utils/swagger";
 
@@ -15,7 +18,10 @@ connectDB(process.env.MONGO_URI as string);
 
 app.use(express.json());
 app.use(morgan("tiny"));
-app.use(cors())
+app.use(cors());
+app.use("/api", roleRouter);
+app.use("/api", authRouter);
+app.use("/api", userRouter);
 
 // swaggerDocs(app, 3000);
 
