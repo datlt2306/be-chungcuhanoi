@@ -3,7 +3,7 @@ import express, { Express } from "express";
 import morgan from "morgan";
 import connectDB from "./config/database";
 import cors from 'cors';
-
+import routerCategory from "./routes/category";
 // import swaggerDocs from "./utils/swagger";
 
 const app: Express = express();
@@ -16,7 +16,8 @@ connectDB(process.env.MONGO_URI as string);
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors())
-
+// api
+app.use("/api", routerCategory);
 // swaggerDocs(app, 3000);
 
 export const viteNodeApp: Express = app;
