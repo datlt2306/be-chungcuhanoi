@@ -1,5 +1,6 @@
 import express from "express";
-import { addCategory, getAllCategory, getCategoryById, remove, updateCategory } from "../controllers/category";
+import {getAllCategory,getCategoryById,remove,addCategory,updateCategory} from "../controllers/category/Index"
+
 
 
 
