@@ -1,20 +1,41 @@
 import { categorySchema } from "../schemas/Category.js";
 import Category from "../models/category.js";
 import { Request,Response } from "express";
+import { IcategoryResponse } from "../interfaces/category.js";
 
 
 
 export const getAllCategory = async (req, res) => {
+  const {
+    _page = 1,
+    _sort = "createAt",
+    _limit = 10,
+    _order = "asc",
+  } = req.query;
+
+  const options = {
+    page: _page,
+    sort: { [_sort as string]: _order === "asc" ? -1 : 1 },
+    limit: _limit,
+};
   try {
-    const category = await Category.find()
+    const category = await Category.paginate({}, options) as any;
     if (category.length === 0) {
       return res.status(404).json({
         message: "Không có danh mục!",
       });
     }
+    const response: IcategoryResponse = {
+      data: category.docs,
+      pagination: {
+          currentPage: category.page,
+          totalPages: category.totalPages,
+          totalItems: category.totalDocs,
+      },
+  };
     return res.status(200).json({
       message: "Lấy tất cả danh mục thành công!",
-      category,
+      response,
     });
   } catch (error) {
     return res.status(400).json({
@@ -22,7 +43,6 @@ export const getAllCategory = async (req, res) => {
     });
   }
 };
-
 
 export const getCategoryById = async (req, res) => {
   try {
@@ -67,9 +87,9 @@ export const remove = async (req, res) => {
 
 export const addCategory = async (req, res) => {
   try {
-    const { Category_name } = req.body;
+    const { category_name } = req.body;
     const formData = req.body;
-    const data = await Category.findOne({ Category_name });
+    const data = await Category.findOne({ category_name });
     if (data) {
       return res.status(400).json({
         message: "Danh mục đã tồn tại",
@@ -113,6 +133,7 @@ export const updateCategory = async (req, res) => {
     const category = await Category.findOneAndUpdate({ _id: id }, body, {
       new: true,
     }) as any;
+    
     if (!category || category.length === 0) {
       return res.status(400).json({
         message: "Cập nhật danh mục thất bại",
