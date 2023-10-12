@@ -11,12 +11,14 @@ export interface IProject {
     project_address: string,
     project_acreage?: number,
     project_district?: string,
-    // categoryId: mongoose.Types.ObjectId,
-    // userId?: mongoose.Types.ObjectId,
+    categoryId: mongoose.Types.ObjectId,
+    userId?: mongoose.Types.ObjectId,
     status?: [],
     map_link?: string,
     createdAt?: Date,
     updatedAt?: Date,
+    deletedAt?: Date,
+    deleted?: boolean,
 }
 
 export interface IprojectResponse {
