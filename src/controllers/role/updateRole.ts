@@ -17,6 +17,14 @@ export const updateRole = async (
       });
     }
 
+    const roleExists = await Role.findOne({ role: req.body.role });
+
+    if (roleExists) {
+      return res.status(400).json({
+        message: `${req.body.role} đã tồn tại`,
+      });
+    }
+
     const role = await Role.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
