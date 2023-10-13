@@ -60,7 +60,6 @@ const projectSchema = new mongoose.Schema<IProject>({
     },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: "Category",
     },
     userId: {
