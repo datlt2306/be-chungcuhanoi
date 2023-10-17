@@ -25,13 +25,10 @@ const userSchema = new mongoose.Schema<IUser>(
       required: true,
       unique: true,
     },
-    roleId: {
-      type: mongoose.Types.ObjectId,
-      ref: "Role",
-    },
-    status: {
-      type: Boolean,
-      default: true,
+    role: {
+      type: String,
+      enum: ["admin", "member"],
+      default: "admin",
     },
   },
   { timestamps: true, versionKey: false }

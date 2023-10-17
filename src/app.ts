@@ -3,7 +3,6 @@ import express, { Express } from "express";
 import morgan from "morgan";
 import connectDB from "./config/database";
 import cors from "cors";
-import roleRouter from "./routes/role";
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
 
@@ -19,7 +18,6 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 
-app.use("/api", roleRouter);
 app.use("/api", authRouter);
 app.use("/api", userRouter);
 app.use("/api", routerCategory);

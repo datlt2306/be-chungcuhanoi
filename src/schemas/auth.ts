@@ -36,10 +36,6 @@ export const signupSchema = Joi.object({
       "any.only": `"confirmPassword" phải giống "password"`,
       "any.required": `"confirmPassword" là trường bắt buộc`,
     }),
-  roleId: Joi.string().required().messages({
-    "string.empty": "roleId không được để trống",
-    "any.required": "roleId là trường bắt buộc",
-  }),
 });
 export const signInSchema = Joi.object({
   email: Joi.string().email().required().messages({

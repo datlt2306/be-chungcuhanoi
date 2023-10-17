@@ -1,7 +1,7 @@
 import { Request } from "express";
-import User from "../models/user";
+import User from "../../models/user";
 import { Response } from "express";
-import { IUser } from "../interfaces/user";
+import { IUser } from "../../interfaces/user";
 
 export const getAllUser = async (
   req: Request,
@@ -34,7 +34,6 @@ export const getAllUser = async (
       name: user.name,
       email: user.email,
       phone: user.phone,
-      roleId: user.roleId,
     }));
 
     return res.status(200).json({
@@ -84,37 +83,11 @@ export const getUserProfile = async (
         name: user.name,
         email: user.email,
         phone: user.phone,
-        roleId: user.roleId,
       },
     });
   } catch (error) {
     return res
       .status(500)
       .json({ message: "Lỗi server", error: error.message });
-  }
-};
-
-export const updateUserProfile = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  try {
-    const userId = req.params.id;
-    const userData: IUser = req.body;
-    const updatedUser = await User.findByIdAndUpdate(userId, userData, {
-      new: true,
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Cập nhật tài khoản thành công",
-      updatedUser,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Cập nhật tài khoản không thành công",
-      error: error.message,
-    });
   }
 };

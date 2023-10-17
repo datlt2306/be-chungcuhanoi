@@ -6,9 +6,5 @@ export interface IUser extends Document {
   email: string;
   password: string;
   phone: String;
-  roleId: {
-    type: mongoose.Types.ObjectId;
-    ref: "Role";
-  };
-  status: boolean;
+  role: string;
 }
