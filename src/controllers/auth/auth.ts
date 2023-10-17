@@ -41,7 +41,11 @@ export const signup = async (
       ...req.body,
       password: hashedPassword,
     });
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET as Secret);
+    const token = jwt.sign(
+      { _id: user._id },
+      process.env.JWT_SECRET as Secret,
+      { expiresIn: "1d" }
+    );
 
     return res.status(201).json({
       success: true,
@@ -86,7 +90,13 @@ export const signin = async (req: Request, res: Response) => {
         .json({ success: false, message: "Mật khẩu không khớp" });
     }
 
-    const token = jwt.sign({ _id: user._id }, "batdongsan");
+    const token = jwt.sign(
+      { _id: user._id },
+      process.env.JWT_SECRET as Secret,
+      {
+        expiresIn: "1d",
+      }
+    );
 
     res.status(200).json({
       success: true,
