@@ -5,7 +5,7 @@ export const signupSchema = Joi.object({
     "string.min": `"name phải có ít nhất 3 ký tự"`,
     "string.base": `"name" phải là kiểu "text"`,
     "string.empty": `"name" không được bỏ trống`,
-    "any.required": `"email" là trường bắt buộc`,
+    "any.required": `"name" là trường bắt buộc`,
   }),
   email: Joi.string().email().required().messages({
     "string.base": `"email" phải là kiểu "text"`,

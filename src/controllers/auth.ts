@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt, { Secret } from "jsonwebtoken";
 import User from "../models/user";
-import Role from "../models/role";
 import { signInSchema, signupSchema } from "../schemas/auth";
 import { IUser } from "../interfaces/user";
 import dotenv from "dotenv";
@@ -46,12 +45,6 @@ export const signup = async (
       roleId,
     });
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET as Secret);
-
-    await Role.findByIdAndUpdate(roleId, {
-      $addToSet: {
-        users: user._id,
-      },
-    });
 
     return res.status(201).json({
       message: "Đăng ký thành công",

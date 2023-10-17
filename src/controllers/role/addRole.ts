@@ -19,6 +19,14 @@ export const addRole = async (
       });
     }
 
+    const roleExists = await Role.findOne({ role: req.body.role });
+
+    if (roleExists) {
+      return res.status(400).json({
+        message: `${req.body.role} đã tồn tại`,
+      });
+    }
+
     const role: IRole = await Role.create(req.body);
 
     return res.status(201).json({

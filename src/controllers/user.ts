@@ -3,12 +3,72 @@ import User from "../models/user";
 import { Response } from "express";
 import { IUser } from "../interfaces/user";
 
+export const getAllUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const {
+      _page = 1,
+      _limit = 10,
+      _sort = "createAt",
+      _order = "asc",
+    } = req.query;
+
+    const options = {
+      page: _page,
+      limit: _limit,
+      sort: {
+        [_sort as string]: _order === "desc" ? -1 : 1,
+      },
+    };
+    const user = await User.paginate({}, options);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy thông tin người dùng",
+      });
+    }
+
+    const result = user.docs.map((user: IUser) => ({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      roleId: user.roleId,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      message: "Lấy thông tin người dùng thành công",
+      result,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Lỗi server", error: error.message });
+  }
+};
+
 export const getUserProfile = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
     const userId = req.params.id;
+    const {
+      _page = 1,
+      _limit = 10,
+      _sort = "createAt",
+      _order = "asc",
+    } = req.query;
+
+    const options = {
+      page: _page,
+      limit: _limit,
+      sort: {
+        [_sort as string]: _order === "desc" ? -1 : 1,
+      },
+    };
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -20,7 +80,12 @@ export const getUserProfile = async (
     return res.status(200).json({
       success: true,
       message: "Lấy thông tin người dùng thành công",
-      user: { ...user },
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        roleId: user.roleId,
+      },
     });
   } catch (error) {
     return res
