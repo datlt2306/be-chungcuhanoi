@@ -1,11 +1,12 @@
 import { defineConfig } from "vite";
 import { VitePluginNode } from "vite-plugin-node";
 import { resolve } from "path";
-
+import dotenv from "dotenv";
+dotenv.config();
 export default defineConfig({
   root: "src",
   server: {
-    port: 8000,
+    port: +(process.env.PORT || 3000),
   },
   build: {
     ssr: "index.ts",
