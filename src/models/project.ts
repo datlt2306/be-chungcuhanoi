@@ -8,7 +8,6 @@ const projectSchema = new mongoose.Schema<IProject>({
     project_name: {
         type: String,
         maxlength: 55,
-        required: true,
     },
     map_link: {
         type: String,
@@ -16,46 +15,33 @@ const projectSchema = new mongoose.Schema<IProject>({
     project_location: {
         type: String,
         maxlength: 255,
-        required: true,
     },
     project_district: {
         type: String,
         maxlength: 255,
-        required: true,
-    },
-    project_address: {
-        type: String,
-        maxlength: 255,
-        required: true,
     },
     project_content: {
         type: String,
         maxlength: 255,
-        required: true,
     },
     project_price: {
         type: Number,
         min: 0,
-        required: true,
     },
     project_acreage: {
         type: Number,
         min: 0,
-        required: true,
     },
     project_room: {
         type: Number,
         min: 0,
-        required: true,
     },
     project_image: {
         type: Array,
-        require: true,
     },
     project_view: {
         type: Number,
         default: 0,
-        required: true,
         min: 0
     },
     categoryId: {
