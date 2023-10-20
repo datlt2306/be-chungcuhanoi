@@ -1,9 +1,13 @@
-import mongoose, { PaginateModel, model } from "mongoose";
+import mongoose from "mongoose";
 import { IUser } from "../interfaces/user";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 const userSchema = new mongoose.Schema<IUser>(
   {
+    avata: {
+      type: String,
+      default: "",
+    },
     name: {
       type: String,
       required: true,

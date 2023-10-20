@@ -18,6 +18,7 @@ export const signup = async (
     if (error) {
       const errors = error.details.map((error) => error.message);
       return res.status(400).json({
+        error: true,
         message: errors,
       });
     }
@@ -25,13 +26,15 @@ export const signup = async (
     const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({
+        error: true,
         message: "Email đã tồn tại",
       });
     }
 
-    const phneExists = await User.findOne({ phone });
-    if (phneExists) {
+    const phoneExists = await User.findOne({ phone });
+    if (phoneExists) {
       return res.status(400).json({
+        error: true,
         message: "số điện thoại đã tồn tại",
       });
     }
@@ -52,10 +55,10 @@ export const signup = async (
       message: "Đăng ký thành công",
       user: {
         _id: user._id,
+        avata: user.avata,
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role,
       },
       token,
     });
@@ -71,7 +74,7 @@ export const signin = async (req: Request, res: Response) => {
     if (error) {
       const errors = error.details.map((error) => error.message);
       return res.status(400).json({
-        success: false,
+        error: true,
         message: errors,
       });
     }
@@ -79,7 +82,7 @@ export const signin = async (req: Request, res: Response) => {
     if (!user) {
       return res
         .status(400)
-        .json({ success: false, message: "Tài khoản không tồn tại" });
+        .json({ error: true, message: "Tài khoản không tồn tại" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -87,7 +90,7 @@ export const signin = async (req: Request, res: Response) => {
     if (!isMatch) {
       return res
         .status(400)
-        .json({ success: false, message: "Mật khẩu không khớp" });
+        .json({ error: true, message: "Mật khẩu không khớp" });
     }
 
     const token = jwt.sign(
@@ -100,6 +103,7 @@ export const signin = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
+      message: "Đăng nhập thành công",
       user: {
         _id: user._id,
         name: user.name,

@@ -25,12 +25,13 @@ export const getAllUser = async (
     const user = await User.paginate({}, options);
     if (!user) {
       return res.status(404).json({
-        success: false,
+        error: true,
         message: "Không tìm thấy thông tin người dùng",
       });
     }
 
     const result = user.docs.map((user: IUser) => ({
+      _id: user._id,
       name: user.name,
       email: user.email,
       phone: user.phone,
@@ -71,7 +72,7 @@ export const getUserProfile = async (
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
-        success: false,
+        error: true,
         message: "Không tìm thấy thông tin người dùng",
       });
     }
@@ -80,6 +81,7 @@ export const getUserProfile = async (
       success: true,
       message: "Lấy thông tin người dùng thành công",
       user: {
+        _id: user._id,
         name: user.name,
         email: user.email,
         phone: user.phone,
