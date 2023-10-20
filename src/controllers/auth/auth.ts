@@ -28,6 +28,7 @@ export const signup = async (
       return res.status(400).json({
         error: true,
         message: "Email đã tồn tại",
+        success: false,
       });
     }
 
@@ -36,6 +37,7 @@ export const signup = async (
       return res.status(400).json({
         error: true,
         message: "số điện thoại đã tồn tại",
+        success: false,
       });
     }
 
