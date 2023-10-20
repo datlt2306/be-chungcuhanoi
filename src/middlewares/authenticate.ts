@@ -19,18 +19,23 @@ export const authenticate = async (req: any, res: any, next: NextFunction) => {
         if (error) {
           if (error.name === "JsonWebTokenError") {
             return res.status(400).json({
+              success: false,
               message: "Token không hợp lệ",
             });
           }
           if (error.name === "TokenExpiredError") {
             return res.status(400).json({
+              success: false,
               message: "Token đã hết hạn",
             });
           }
         }
         const user = (await User.findById(payload._id)) as IUser;
         if (!user) {
-          throw new Error("Không tìm thấy người dùng");
+          return res.status(400).json({
+            success: false,
+            message: "Không tìm thấy người dùng",
+          });
         }
         req.user = user;
         next();

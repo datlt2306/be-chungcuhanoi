@@ -7,6 +7,9 @@ export const signupSchema = Joi.object({
     "string.empty": `"name" không được bỏ trống`,
     "any.required": `"name" là trường bắt buộc`,
   }),
+  avata: Joi.string().allow("").optional().messages({
+    "string.base": `"avata" phải là kiểu "text"`,
+  }),
   email: Joi.string().email().required().messages({
     "string.base": `"email" phải là kiểu "text"`,
     "string.empty": `"email" không được bỏ trống`,
