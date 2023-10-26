@@ -32,7 +32,8 @@ export const getAll = async (req: Request, res: Response) => {
         _sort = "createAt",
         _limit = 10,
         _order = "asc",
-        _key = ""
+        _key = "",
+        _project_price = "",
     } = req.query;
 
     const options = {
@@ -42,14 +43,28 @@ export const getAll = async (req: Request, res: Response) => {
     };
 
     try {
-        const searchQuery = _key ? { project_name: { $regex: _key, $options: "i" } } : {};
+        const searchQuery: any = {};
+
+        if (_project_price && !isNaN(Number(_project_price))) {
+            searchQuery.project_price = { $eq: Number(_project_price) };
+        }
+
+        if (_key) {
+            const keyAsNumber = Number(_key);
+
+            searchQuery.$or = [
+                { project_name: { $regex: _key, $options: "i" } },
+                { project_price: keyAsNumber || 0 }, // Sử dụng giá trị số hoặc mặc định là 0 nếu không phải số
+            ];
+        }
+
         const projects = await Project.paginate(searchQuery, options) as any;
+
         if (!projects || projects.docs.length === 0) {
             return res.status(400).json({
                 message: "Không tìm thấy thông tin dự án!",
             });
         }
-        
 
         const response: IprojectResponse = {
             data: projects.docs,
@@ -70,7 +85,6 @@ export const getAll = async (req: Request, res: Response) => {
         });
     }
 }
-
 export const getAllDeleted = async (req: Request, res: Response) => {
     try {
         const deletedProject = await Project.findDeleted({});
