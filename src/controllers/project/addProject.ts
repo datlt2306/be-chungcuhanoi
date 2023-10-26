@@ -26,12 +26,12 @@ export const createProject = async (req: Request, res: Response) => {
                 message: "Danh mục không tồn tại",
             });
         }
-        // const existUser = await User.findOne({ userId });
-        // if (!existUser) {
-        //     return res.status(400).json({
-        //         message: "Tài khoản không tồn tại",
-        //     });
-        // }
+        const existUser = await User.findOne({ userId });
+        if (!existUser) {
+            return res.status(400).json({
+                message: "Tài khoản không tồn tại",
+            });
+        }
 
         const { error } = projectSchema.validate(formData, { abortEarly: false });
         if (error) {
@@ -42,10 +42,12 @@ export const createProject = async (req: Request, res: Response) => {
         const project = await Project.create(formData);
         if (!project) {
             return res.status(400).json({
+                success: false,
                 message: "Thêm dự án thất bại!",
             });
         }
         return res.status(200).json({
+            success: true,
             message: "Thêm dự án thành công!",
             project
         });

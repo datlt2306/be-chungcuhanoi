@@ -32,6 +32,7 @@ export const getAll = async (req: Request, res: Response) => {
         _sort = "createAt",
         _limit = 10,
         _order = "asc",
+        _search = ""
     } = req.query;
 
     const options = {
@@ -41,12 +42,14 @@ export const getAll = async (req: Request, res: Response) => {
     };
 
     try {
-        const projects = await Project.paginate({}, options) as any;
-        if (!projects || projects.length === 0) {
+        const searchQuery = _search ? { project_name: { $regex: _search, $options: "i" } } : {};
+        const projects = await Project.paginate(searchQuery, options) as any;
+        if (!projects || projects.docs.length === 0) {
             return res.status(400).json({
                 message: "Không tìm thấy thông tin dự án!",
             });
         }
+        
 
         const response: IprojectResponse = {
             data: projects.docs,
@@ -79,7 +82,7 @@ export const getAllDeleted = async (req: Request, res: Response) => {
         return res.status(200).json({
             message: "Lấy tất cả dữ liệu đã bị xóa",
             project: deletedProject,
-        });
+        })
     } catch (error) {
         return res.status(400).json({
             message: error.message,

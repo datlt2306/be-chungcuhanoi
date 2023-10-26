@@ -93,3 +93,30 @@ export const getUserProfile = async (
       .json({ message: "Lỗi server", error: error.message });
   }
 };
+
+export const getUserByToken = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  try {
+    const { token } = req.params;
+
+    const user = await User.findOne({ token });
+    if (!user) {
+      return res.status(404).json({
+        error: true,
+        message: "Không tìm thấy thông tin người dùng",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Lấy thông tin người dùng thành công",
+      user
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Lỗi server", error: error.message });
+  }
+};
