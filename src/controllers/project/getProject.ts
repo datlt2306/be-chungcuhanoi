@@ -32,7 +32,7 @@ export const getAll = async (req: Request, res: Response) => {
         _sort = "createAt",
         _limit = 10,
         _order = "asc",
-        _key = "",
+        _search = "",
         _project_price = "",
     } = req.query;
 
@@ -49,11 +49,11 @@ export const getAll = async (req: Request, res: Response) => {
             searchQuery.project_price = { $eq: Number(_project_price) };
         }
 
-        if (_key) {
-            const keyAsNumber = Number(_key);
+        if (_search) {
+            const keyAsNumber = Number(_search);
 
             searchQuery.$or = [
-                { project_name: { $regex: _key, $options: "i" } },
+                { project_name: { $regex: _search, $options: "i" } },
                 { project_price: keyAsNumber || 0 }, // Sử dụng giá trị số hoặc mặc định là 0 nếu không phải số
             ];
         }
