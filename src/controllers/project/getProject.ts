@@ -82,7 +82,7 @@ export const getAllDeleted = async (req: Request, res: Response) => {
         return res.status(200).json({
             message: "Lấy tất cả dữ liệu đã bị xóa",
             project: deletedProject,
-        });
+        })
     } catch (error) {
         return res.status(400).json({
             message: error.message,
