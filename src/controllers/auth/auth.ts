@@ -106,12 +106,12 @@ export const signin = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Đăng nhập thành công",
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-      },
+      // user: {
+      //   _id: user._id,
+      //   name: user.name,
+      //   email: user.email,
+      //   phone: user.phone,
+      // },
       token,
     });
   } catch (error) {
