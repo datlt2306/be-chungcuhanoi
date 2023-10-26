@@ -32,7 +32,7 @@ export const getAll = async (req: Request, res: Response) => {
         _sort = "createAt",
         _limit = 10,
         _order = "asc",
-        _key = ""
+        _search = ""
     } = req.query;
 
     const options = {
@@ -42,7 +42,7 @@ export const getAll = async (req: Request, res: Response) => {
     };
 
     try {
-        const searchQuery = _key ? { project_name: { $regex: _key, $options: "i" } } : {};
+        const searchQuery = _search ? { project_name: { $regex: _search, $options: "i" } } : {};
         const projects = await Project.paginate(searchQuery, options) as any;
         if (!projects || projects.docs.length === 0) {
             return res.status(400).json({
