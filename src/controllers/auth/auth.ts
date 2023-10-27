@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt, { Secret } from "jsonwebtoken";
 import User from "../../models/user";
+import RefreshToken from "../../models/refreshToken.js";
 import { signInSchema, signupSchema } from "../../schemas/auth";
 import { IUser } from "../../interfaces/user";
 import dotenv from "dotenv";
@@ -46,22 +47,19 @@ export const signup = async (
       ...req.body,
       password: hashedPassword,
     });
-    const token = jwt.sign(
-      { _id: user._id },
-      process.env.JWT_SECRET as Secret,
-      { expiresIn: "1d" }
-    );
+    const token = jwt.sign({ user }, process.env.JWT_SECRET as Secret, {
+      expiresIn: "7d",
+    });
+
+    const refreshToken = jwt.sign({ user }, process.env.JWT_SECRET as Secret, {
+      expiresIn: "30d",
+    });
+
+    await RefreshToken.create({ userId: user._id, refreshToken });
 
     return res.status(201).json({
       success: true,
       message: "Đăng ký thành công",
-      user: {
-        _id: user._id,
-        avata: user.avata,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-      },
       token,
     });
   } catch (error) {
@@ -95,23 +93,18 @@ export const signin = async (req: Request, res: Response) => {
         .json({ error: true, message: "Mật khẩu không khớp" });
     }
 
-    const token = jwt.sign(
-      { _id: user._id },
-      process.env.JWT_SECRET as Secret,
-      {
-        expiresIn: "1d",
-      }
-    );
+    const token = jwt.sign({ user }, process.env.JWT_SECRET as Secret, {
+      expiresIn: "7d",
+    });
+    const refreshToken = jwt.sign({ user }, process.env.JWT_SECRET as Secret, {
+      expiresIn: "30d",
+    });
+
+    await RefreshToken.updateMany({ userId: user._id }, refreshToken);
 
     res.status(200).json({
       success: true,
       message: "Đăng nhập thành công",
-      // user: {
-      //   _id: user._id,
-      //   name: user.name,
-      //   email: user.email,
-      //   phone: user.phone,
-      // },
       token,
     });
   } catch (error) {

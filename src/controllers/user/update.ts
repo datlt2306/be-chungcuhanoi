@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import User from "../../models/user";
 import { IUser } from "../../interfaces/user";
+import RefreshToken from "../../models/refreshToken.js";
 import bcrypt from "bcryptjs";
 import { userSchema } from "../../schemas/user";
+import jwt, { Secret } from "jsonwebtoken";
 
 const updateProfile = async (req: Request, res: Response) => {
   try {
+    const idUser = req?.["user"]?._id;
     const { email, phone, password } = req.body;
     const { error } = userSchema.validate(req.body, {
       abortEarly: false,
@@ -16,7 +19,6 @@ const updateProfile = async (req: Request, res: Response) => {
         messages: error.details.map((detail) => detail.message),
       });
     }
-    const idUser = req.params.id;
     const user: IUser | null = await User.findById(idUser);
     if (!user) {
       return res
@@ -51,7 +53,7 @@ const updateProfile = async (req: Request, res: Response) => {
         .json({ error: true, message: "Mật khẩu không khớp" });
     }
 
-    const updateUser = await User.findByIdAndUpdate(
+    const productUpdate = await User.findByIdAndUpdate(
       idUser,
       {
         ...req.body,
@@ -59,19 +61,36 @@ const updateProfile = async (req: Request, res: Response) => {
       },
       { new: true }
     );
-    if (updateUser) {
+
+    if (!productUpdate) {
       return res.status(200).json({
-        success: true,
-        message: "Cập nhật tài khoản thành công",
-        user: {
-          _id: updateUser._id,
-          avata: updateUser.avata,
-          name: updateUser.name,
-          email: updateUser.email,
-          phone: updateUser.phone,
-        },
+        error: true,
+        message: "Cập nhật tài khoản thất bại!",
       });
     }
+
+    const token = jwt.sign(
+      { productUpdate },
+      process.env.JWT_SECRET as Secret,
+      {
+        expiresIn: "7d",
+      }
+    );
+    const refreshToken = jwt.sign(
+      { productUpdate },
+      process.env.JWT_SECRET as Secret,
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    await RefreshToken.updateMany({ userId: productUpdate._id }, refreshToken);
+
+    return res.status(200).json({
+      success: true,
+      message: "Cập nhật tài khoản thành công",
+      token,
+    });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
