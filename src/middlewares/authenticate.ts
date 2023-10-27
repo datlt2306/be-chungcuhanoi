@@ -15,7 +15,7 @@ export const authenticate = async (req: any, res: any, next: NextFunction) => {
     jwt.verify(
       token,
       secretKey,
-      async (error: { name: string }, payload: { _id: any }) => {
+      async (error: { name: string }, payload: any) => {
         if (error) {
           if (error.name === "JsonWebTokenError") {
             return res.status(400).json({
@@ -30,13 +30,14 @@ export const authenticate = async (req: any, res: any, next: NextFunction) => {
             });
           }
         }
-        const user = (await User.findById(payload._id)) as IUser;
+        const user = (await User.findById(payload?.["user"]?._id)) as IUser;
         if (!user) {
           return res.status(400).json({
             success: false,
             message: "Không tìm thấy người dùng",
           });
         }
+
         req.user = user;
         next();
       }

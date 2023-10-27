@@ -6,6 +6,7 @@ import { userSchema } from "../../schemas/user";
 
 const updateProfile = async (req: Request, res: Response) => {
   try {
+    const idUser = req?.["user"]?._id;
     const { email, phone, password } = req.body;
     const { error } = userSchema.validate(req.body, {
       abortEarly: false,
@@ -16,7 +17,6 @@ const updateProfile = async (req: Request, res: Response) => {
         messages: error.details.map((detail) => detail.message),
       });
     }
-    const idUser = req.params.id;
     const user: IUser | null = await User.findById(idUser);
     if (!user) {
       return res
@@ -59,19 +59,18 @@ const updateProfile = async (req: Request, res: Response) => {
       },
       { new: true }
     );
-    if (updateUser) {
+
+    if (!updateUser) {
       return res.status(200).json({
-        success: true,
-        message: "Cập nhật tài khoản thành công",
-        user: {
-          _id: updateUser._id,
-          avata: updateUser.avata,
-          name: updateUser.name,
-          email: updateUser.email,
-          phone: updateUser.phone,
-        },
+        error: true,
+        message: "Cập nhật tài khoản thất bại!",
       });
     }
+
+    return res.status(200).json({
+      success: true,
+      message: "Cập nhật tài khoản thành công",
+    });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
