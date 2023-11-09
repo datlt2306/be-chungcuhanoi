@@ -4,7 +4,7 @@ import { projectUpdateSchema } from "../../schemas/project";
 
 export const updateProject = async (req: Request, res: Response) => {
     const formData = req.body;
-    const { project_name } = req.body;
+    const { createdAt, updatedAt, ...rest } = req.body;
     const id = req.params.id;
     try {
 
@@ -15,18 +15,20 @@ export const updateProject = async (req: Request, res: Response) => {
             });
         }
 
-        const checkName = await Project.findOne({ project_name });
+        const checkName = await Project.findOne({ ...rest });
+        console.log(checkName);
+
         if (checkName) {
-            return res.status(400).json({
-                message: "Tên dự án đã tồn tại",
+            return res.status(200).json({
+                message: "Cập nhật thành công không có gì thay đổi",
             });
         }
 
-        const { error } = projectUpdateSchema.validate(formData, { abortEarly: false });
-        if (error) {
-            const errors = error.details.map((message) => ({ message }));
-            return res.status(400).json({ errors });
-        }
+        // const { error } = projectUpdateSchema.validate(formData, { abortEarly: false });
+        // if (error) {
+        //     const errors = error.details.map((message) => ({ message }));
+        //     return res.status(400).json({ errors });
+        // }
 
         const project = await Project.findByIdAndUpdate(id, formData, { new: true });
         if (!project) {

@@ -7,7 +7,7 @@ const plugins = [mongoosePaginate, MongooseDelete];
 const projectSchema = new mongoose.Schema<IProject>({
     project_name: {
         type: String,
-        maxlength: 55,
+        maxlength: 255,
     },
     map_link: {
         type: String,
