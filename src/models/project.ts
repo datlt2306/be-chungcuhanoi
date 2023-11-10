@@ -22,7 +22,7 @@ const projectSchema = new mongoose.Schema<IProject>({
     },
     project_content: {
         type: String,
-        maxlength: 255,
+
     },
     project_price: {
         type: Number,
