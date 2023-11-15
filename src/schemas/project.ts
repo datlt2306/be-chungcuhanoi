@@ -15,6 +15,7 @@ export const projectSchema = joi.object({
     project_image: joi.array(),
     categoryId: joi.string().required(),
     userId: joi.string().required(),
+    description_group: joi.object(),
 });
 
 export const projectUpdateSchema = joi.object({
@@ -30,6 +31,7 @@ export const projectUpdateSchema = joi.object({
     project_content: joi.string(),
     project_acreage: joi.number(),
     project_image: joi.array(),
+    description_group: joi.object(),
     categoryId: joi.string().required(),
     userId: joi.string().required(),
     createdAt: joi.date().default(() => new Date()),

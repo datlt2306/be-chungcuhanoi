@@ -14,6 +14,7 @@ export interface IProject {
     categoryId: mongoose.Types.ObjectId,
     userId?: mongoose.Types.ObjectId,
     status?: [],
+    description_group: object,
     map_link?: string,
     createdAt?: Date,
     updatedAt?: Date,

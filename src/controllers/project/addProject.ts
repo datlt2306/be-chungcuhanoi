@@ -8,6 +8,7 @@ export const createProject = async (req: Request, res: Response) => {
     const formData = req.body;
     const { project_name, categoryId, userId } = req.body;
     try {
+
         if (!userId) {
             return res.status(400).json({
                 message: "Bạn chưa đăng nhập",

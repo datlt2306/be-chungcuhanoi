@@ -7,7 +7,7 @@ const plugins = [mongoosePaginate, MongooseDelete];
 const projectSchema = new mongoose.Schema<IProject>({
     project_name: {
         type: String,
-        maxlength: 255,
+        maxlength: 55,
     },
     map_link: {
         type: String,
@@ -19,10 +19,6 @@ const projectSchema = new mongoose.Schema<IProject>({
     project_district: {
         type: String,
         maxlength: 255,
-    },
-    project_content: {
-        type: String,
-
     },
     project_price: {
         type: Number,
@@ -52,6 +48,38 @@ const projectSchema = new mongoose.Schema<IProject>({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "User",
+    },
+    description_group: {
+        overview: {
+            description: { type: String },
+            image: { type: Object }
+        }, // tổng quan
+        location: { // Vị trí
+            description: { type: String },
+            image: { type: Array },
+            image_description: { type: String }
+        },
+        utilities: { // tiện ích
+            title: String,
+            description: String,
+            image: [
+                {
+                    image: Object,
+                    image_description: String
+                }
+            ]
+        },
+        floor_design: [ // thiết kế mặt bằng
+            {
+                title: String,
+                image: Object,
+                image_description: String,
+                description_detail: String
+            }
+        ],
+        utilities_additional: [{  // tiện ích bổ sung
+            title: String,
+        }],
     },
     status: {
         type: Array,

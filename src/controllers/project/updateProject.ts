@@ -16,7 +16,6 @@ export const updateProject = async (req: Request, res: Response) => {
         }
 
         const checkName = await Project.findOne({ ...rest });
-        console.log(checkName);
 
         if (checkName) {
             return res.status(200).json({
