@@ -20,6 +20,7 @@ export interface IProject {
     updatedAt?: Date,
     deletedAt?: Date,
     deleted?: boolean,
+    project_wards?: string
 }
 
 export interface IprojectResponse {

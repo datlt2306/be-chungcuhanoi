@@ -20,6 +20,10 @@ const projectSchema = new mongoose.Schema<IProject>({
         type: String,
         maxlength: 255,
     },
+    project_wards: {
+        type: String,
+        maxlength: 255,
+    },
     project_price: {
         type: Number,
         min: 0,
@@ -82,7 +86,7 @@ const projectSchema = new mongoose.Schema<IProject>({
         }],
     },
     status: {
-        type: Array,
+        type: Number,
     },
     createdAt: {
         type: Date,

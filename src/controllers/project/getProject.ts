@@ -33,7 +33,12 @@ export const getAll = async (req: Request, res: Response) => {
         _limit = 10,
         _order = "asc",
         _search = "",
-        _project_price = "",
+        _project_wards = "",
+        _categoryId = "",
+        _project_acreage,
+        _status,
+        minPrice, // Thêm minPrice và maxPrice vào req.query
+        maxPrice,
     } = req.query;
 
     const options = {
@@ -44,18 +49,64 @@ export const getAll = async (req: Request, res: Response) => {
 
     try {
         const searchQuery: any = {};
-
-        if (_project_price && !isNaN(Number(_project_price))) {
-            searchQuery.project_price = { $eq: Number(_project_price) };
+        if (_categoryId) {
+            searchQuery.categoryId = _categoryId;
         }
+        if (_search || _project_acreage || _status || _project_wards || minPrice || maxPrice) {
 
-        if (_search) {
-            const keyAsNumber = Number(_search);
-
-            searchQuery.$or = [
-                { project_name: { $regex: _search, $options: "i" } },
-                { project_price: keyAsNumber || 0 }, // Sử dụng giá trị số hoặc mặc định là 0 nếu không phải số
-            ];
+            searchQuery.$and = [];
+            if (_search) {
+                searchQuery.$and = [];
+                searchQuery.$and.push({
+                    project_name: { $regex: _search, $options: "i" },
+                });
+            }
+            if (_project_acreage) {
+                const maxProjectAcreage = Number(_project_acreage);
+                searchQuery.$and.push({
+                    project_acreage: { $lt: maxProjectAcreage },
+                });
+            }
+            if (_project_acreage) {
+                const maxProjectAcreage = Number(_project_acreage);
+                searchQuery.$and.push({
+                    project_acreage: { $lt: maxProjectAcreage },
+                });
+            }
+            if (_status) {
+                const maxProjectstatus = Number(_status);
+                searchQuery.$and.push({
+                    status: { $eq: maxProjectstatus },
+                });
+            }
+            if (_project_wards) {
+                searchQuery.$and.push({
+                    project_wards: { $regex: _project_wards, $options: "i" },
+                });
+            }
+            if (minPrice && !maxPrice) {
+                const minPriceValue = Number(minPrice);
+                searchQuery.$and = searchQuery.$and || [];
+                searchQuery.$and.push({
+                    project_price: { $gte: minPriceValue },
+                });
+            } else if (!minPrice && maxPrice) {
+                const maxPriceValue = Number(maxPrice);
+                searchQuery.$and = searchQuery.$and || [];
+                searchQuery.$and.push({
+                    project_price: { $lte: maxPriceValue },
+                });
+            } else if (minPrice && maxPrice) {
+                const minPriceValue = Number(minPrice);
+                const maxPriceValue = Number(maxPrice);
+                searchQuery.$and = searchQuery.$and || [];
+                searchQuery.$and.push({
+                    project_price: {
+                        $gte: minPriceValue,
+                        $lte: maxPriceValue,
+                    },
+                });
+            }
         }
 
         const projects = await Project.paginate(searchQuery, options) as any;
@@ -64,7 +115,17 @@ export const getAll = async (req: Request, res: Response) => {
                 message: "Không tìm thấy thông tin dự án!",
             });
         }
-        
+
+        await Project.populate(projects.docs, [
+            {
+                path: "categoryId",
+                // select: "color_id size_id variant_discount variant_price",
+            },
+            {
+                path: "userId",
+                // select: "color_id size_id variant_discount variant_price",
+            },
+        ]);
 
         const response: IprojectResponse = {
             data: projects.docs,
