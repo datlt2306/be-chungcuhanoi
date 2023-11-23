@@ -34,6 +34,7 @@ export const getAll = async (req: Request, res: Response) => {
         _order = "asc",
         _search = "",
         _project_wards = "",
+        _project_district = "",
         _categoryId = "",
         _project_acreage,
         _status,
@@ -52,7 +53,7 @@ export const getAll = async (req: Request, res: Response) => {
         if (_categoryId) {
             searchQuery.categoryId = _categoryId;
         }
-        if (_search || _project_acreage || _status || _project_wards || minPrice || maxPrice) {
+        if (_search || _project_acreage || _status || _project_wards || minPrice || maxPrice || _project_district) {
 
             searchQuery.$and = [];
             if (_search) {
@@ -67,12 +68,7 @@ export const getAll = async (req: Request, res: Response) => {
                     project_acreage: { $lt: maxProjectAcreage },
                 });
             }
-            if (_project_acreage) {
-                const maxProjectAcreage = Number(_project_acreage);
-                searchQuery.$and.push({
-                    project_acreage: { $lt: maxProjectAcreage },
-                });
-            }
+
             if (_status) {
                 const maxProjectstatus = Number(_status);
                 searchQuery.$and.push({
@@ -82,6 +78,11 @@ export const getAll = async (req: Request, res: Response) => {
             if (_project_wards) {
                 searchQuery.$and.push({
                     project_wards: { $regex: _project_wards, $options: "i" },
+                });
+            }
+            if (_project_district) {
+                searchQuery.$and.push({
+                    project_district: { $regex: _project_district, $options: "i" },
                 });
             }
             if (minPrice && !maxPrice) {
